@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Tradizione - Il Menù Definitivo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #ff4444;
+            --dark: #1a1a1a;
+            --light: #ffffff;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: var(--dark);
+            color: var(--light);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .description {
+            color: #aaa;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 30px;
+            padding: 0 20px;
+            font-size: 0.9em;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            align-items: start;
+            padding-left: 30px;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: rgba(255,255,255,0.05);
+        }
+
+        .slider {
+            width: 300px;
+            accent-color: var(--primary);
+        }
+
+        .menu-item {
+            display: grid;
+            grid-template-columns: 30px 1fr 140px 100px;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 20px 15px 10px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .menu-item i {
+            font-size: 24px;
+            color: var(--primary);
+        }
+
+        .quantity-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: -125px;
+        }
+
+        .quantity-input {
+            width: 80px;
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--light);
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        .quantity-input::-webkit-outer-spin-button,
+        .quantity-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .quantity-input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+        .price-info {
+            font-size: 0.9em;
+            color: var(--primary);
+            margin-top: 4px;
+        }
+
+        .price-display {
+            text-align: right;
+            padding-right: 10px;
+            color: var(--primary);
+        }
+
+        .addons {
+            background: rgba(255,255,255,0.05);
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .price-summary {
+            margin: 20px auto;
+            padding: 15px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 8px;
+            text-align: center;
+            max-width: 500px;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary);
+            font-size: 2em;
+            margin: 20px 0;
+        }
+
+        .checkbox-container {
+            display: block;
+            position: relative;
+            padding-left: 35px;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+
+        .checkbox-container input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .checkmark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 20px;
+            width: 20px;
+            background-color: transparent;
+            border: 2px solid var(--primary);
+            border-radius: 4px;
+        }
+
+        .checkbox-container:hover .checkmark {
+            background-color: rgba(255,68,68,0.1);
+        }
+
+        .checkbox-container input:checked ~ .checkmark {
+            background-color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+                padding-left: 15px;
+            }
+            
+            .menu-item {
+                grid-template-columns: 25px 1fr auto;
+                grid-template-rows: auto auto;
+                gap: 5px;
+                padding: 10px 15px 10px 5px;
+            }
+            
+            .menu-item > i {
+                grid-row: 1 / span 2;
+                align-self: start;
+            }
+            
+            .quantity-group {
+                grid-column: 2 / span 2;
+                grid-row: 2;
+                margin-left: 0;
+            }
+            
+            .price-display {
+                grid-column: 3;
+                grid-row: 1;
+                text-align: right;
+                padding-right: 0;
+                align-self: center;
+            }
+            
+            .slider {
+                width: 200px;
+            }
+            
+            .price-info {
+                display: block;
+                margin-top: 2px;
+            }
+            
+            .addons, .price-summary {
+                padding: 15px;
+                margin: 15px 0;
+            }
+            
+            #totalPrice {
+                font-weight: bold;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>La Tradizione - Il Menù Definitivo</h1>
+    
+    <div class="description">
+        <p>Il menù perfetto per una vera esperienza culinaria pugliese. Le quantità sono impegnative ma noi siamo un gruppo deciso. I prezzi al momento non sono aggiornati, urge una ulteririore visita in quel di Sammichele.</p>
+    </div>
+
+    <div class="slider-container">
+        <span>Persone:</span>
+        <input type="range" id="people" class="slider" min="1" max="10" value="4">
+        <span id="peopleValue">4</span>
+    </div>
+
+    <div class="container">
+        <div class="main-content">
+            <!-- Straccetti -->
+            <div class="menu-item">
+                <i class="fas fa-drumstick-bite"></i>
+                <div>Straccetti</div>
+                <div class="quantity-group">
+                    <input type="number" class="quantity-input" value="800">
+                    <span>g</span>
+                    <div class="price-info">20€/kg</div>
+                </div>
+                <div class="price-display"><span class="price">16.00</span> €</div>
+            </div>
+
+            <!-- T-bone -->
+            <div class="menu-item">
+                <i class="fas fa-bone"></i>
+                <div>
+                    T-bone 
+                    <div class="price-info">50€/kg (1 ogni 4 persone)</div>
+                </div>
+                <div class="quantity-group">
+                    <input type="text" class="quantity-input" value="1×1200g" readonly>
+                </div>
+                <div class="price-display"><span class="price">60.00</span> €</div>
+            </div>
+
+            <!-- Zampine -->
+            <div class="menu-item">
+                <i class="fas fa-paw"></i>
+                <div>Zampine</div>
+                <div class="quantity-group">
+                    <input type="number" class="quantity-input" value="4">
+                    <span>pz</span>
+                    <div class="price-info">15€/kg (≈130g/pz)</div>
+                </div>
+                <div class="price-display"><span class="price">7.80</span> €</div>
+            </div>
+
+            <!-- Bombette Martinesi -->
+            <div class="menu-item">
+                <i class="fas fa-cheese"></i>
+                <div>Bombette Martinesi</div>
+                <div class="quantity-group">
+                    <input type="number" class="quantity-input" value="8">
+                    <span>pz</span>
+                    <div class="price-info">18€/kg (≈70g/pz)</div>
+                </div>
+                <div class="price-display"><span class="price">10.08</span> €</div>
+            </div>
+
+            <!-- Bombette alla 'Nduja -->
+            <div class="menu-item">
+                <i class="fas fa-pepper-hot"></i>
+                <div>Bombette alla 'Nduja</div>
+                <div class="quantity-group">
+                    <input type="number" class="quantity-input" value="8">
+                    <span>pz</span>
+                    <div class="price-info">20€/kg (≈70g/pz)</div>
+                </div>
+                <div class="price-display"><span class="price">11.20</span> €</div>
+            </div>
+
+            <!-- Bombette al Limone -->
+            <div class="menu-item">
+                <i class="fas fa-lemon"></i>
+                <div>Bombette al Limone</div>
+                <div class="quantity-group">
+                    <input type="number" class="quantity-input" value="8">
+                    <span>pz</span>
+                    <div class="price-info">18€/kg (≈70g/pz)</div>
+                </div>
+                <div class="price-display"><span class="price">10.08</span> €</div>
+            </div>
+        </div>
+
+        <div class="addons">
+            <h3>Aggiunte e Dolci</h3>
+            <label class="checkbox-container">
+                <input type="checkbox" id="salsiccia" checked="true">
+                <span class="checkmark"></span>
+                Salsiccia cruda (+5€ ogni 2 persone)
+            </label>
+            <label class="checkbox-container">
+                <input type="checkbox" id="tiramisu" checked="true">
+                <span class="checkmark"></span>
+                Tiramisù (+5€/persona)
+            </label>
+        </div>
+    </div>
+
+    <div class="price-summary">
+        <h3>Totale</h3>
+        <p>Prezzo a persona: <span id="pricePerPerson">29.00</span> €</p>
+        <p>Prezzo totale: <span id="totalPrice"><b>116.00</b></span> €</p>
+    </div>
+
+    <script>
+        const peopleSlider = document.getElementById('people');
+        const peopleValue = document.getElementById('peopleValue');
+        const prices = {
+            straccetti: 20,
+            tbone: 50,
+            zampine: 15,
+            bombetteM: 18,
+            bombetteN: 20,
+            bombetteL: 18
+        };
+
+        const weights = {
+            zampine: 0.13,
+            bombetteM: 0.07,
+            bombetteN: 0.07,
+            bombetteL: 0.07
+        };
+
+        const baseValues = {
+            straccetti: 800,
+            zampine: 4,
+            bombetteM: 8,
+            bombetteN: 8,
+            bombetteL: 8
+        };
+
+        function updateQuantities() {
+            const people = parseInt(peopleSlider.value);
+            peopleValue.textContent = people;
+
+            document.querySelectorAll('.quantity-input').forEach((input, index) => {
+                if(index === 1) return;
+                
+                const itemKey = Object.keys(baseValues)[index > 1 ? index-1 : index];
+                const baseValue = baseValues[itemKey];
+                input.value = Math.round((baseValue / 4) * people);
+            });
+
+            const tboneCount = Math.ceil(people / 4);
+            const tboneInput = document.querySelectorAll('.quantity-input')[1];
+            tboneInput.value = `${tboneCount}×${tboneCount*1200}g`;
+
+            calculatePrice();
+        }
+
+        function calculatePrice() {
+            const people = parseInt(peopleSlider.value);
+            let total = 0;
+
+            const straccettiG = document.querySelectorAll('.quantity-input')[0].value;
+            const tboneValue = document.querySelectorAll('.quantity-input')[1].value;
+            const zampinePz = document.querySelectorAll('.quantity-input')[2].value;
+            const bombetteMPz = document.querySelectorAll('.quantity-input')[3].value;
+            const bombetteNPz = document.querySelectorAll('.quantity-input')[4].value;
+            const bombetteLPz = document.querySelectorAll('.quantity-input')[5].value;
+
+            total += (straccettiG / 1000) * prices.straccetti;
+            total += (parseInt(tboneValue.split('×')[0]) * 1.2) * prices.tbone;
+            total += (zampinePz * weights.zampine) * prices.zampine;
+            total += (bombetteMPz * weights.bombetteM) * prices.bombetteM;
+            total += (bombetteNPz * weights.bombetteN) * prices.bombetteN;
+            total += (bombetteLPz * weights.bombetteL) * prices.bombetteL;
+
+            if(document.getElementById('tiramisu').checked) total += people * 5;
+            if(document.getElementById('salsiccia').checked) total += Math.ceil(people / 2) * 5;
+
+            document.querySelectorAll('.price').forEach((span, index) => {
+                const values = [
+                    ((straccettiG / 1000) * prices.straccetti).toFixed(2),
+                    ((parseInt(tboneValue.split('×')[0]) * 1.2) * prices.tbone).toFixed(2),
+                    (zampinePz * weights.zampine * prices.zampine).toFixed(2),
+                    (bombetteMPz * weights.bombetteM * prices.bombetteM).toFixed(2),
+                    (bombetteNPz * weights.bombetteN * prices.bombetteN).toFixed(2),
+                    (bombetteLPz * weights.bombetteL * prices.bombetteL).toFixed(2)
+                ];
+                span.textContent = values[index];
+            });
+
+            const totalPrice = total.toFixed(2);
+            const pricePerPerson = people > 0 ? (total / people).toFixed(2) : '0.00';
+
+            document.getElementById('totalPrice').innerHTML = `<b>${totalPrice}</b>`;
+            document.getElementById('pricePerPerson').textContent = pricePerPerson;
+        }
+
+        peopleSlider.addEventListener('input', updateQuantities);
+        document.querySelectorAll('.quantity-input').forEach(input => {
+            if(input.type === 'number') {
+                input.addEventListener('input', calculatePrice);
+            }
+        });
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', calculatePrice);
+        });
+
+        updateQuantities();
+    </script>
+</body>
+</html>
